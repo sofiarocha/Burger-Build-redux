@@ -1,22 +1,55 @@
 import React, { Component } from 'react';
-import { Route } from 'react-router-dom';
+import { Route, withRouter, Switch, Redirect } from 'react-router-dom';
+import { connect } from 'react-redux';
 
 import Layout from './hoc/Layout/Layout';
 import BurgerBuilder from './containers/BurgerBuilder/BurgerBuilder';
 import Checkout from './containers/Checkout/Checkout';
 import Orders from './containers/Orders/Orders';
+import Auth from './containers/Auth/Auth';
+import Logout from './containers/Auth/Logout/Logout';
+import * as actions from './store/actions/actions';
 
 class App extends Component {
+
+  componentDidMount () {
+    this.props.onTryAutoSignup();
+  }
+
   render() {
     return (
       <Layout>
-        <Route exact path="/" component={BurgerBuilder} />
-        <Route path="/checkout" component={Checkout} />
-        <Route path="/orders" component={Orders} />
+        {this.props.isAuth
+          ? <Switch>
+              <Route exact path="/" component={BurgerBuilder} />
+              <Route path="/checkout" component={Checkout} />
+              <Route path="/orders" component={Orders} />
+              <Route path="/auth" component={Auth} />
+              <Route path="/logout" component={Logout} />
+              <Redirect to="/" />
+          </Switch>
+          : <Switch>
+              <Route exact path="/" component={BurgerBuilder} />
+              <Route path="/auth" component={Auth} />
+              <Redirect to="/" />
+          </Switch>
+        }
       </Layout>
     );
     // return React.createElement('div', null, React.createElement('h1', null, 'Hello World'));
   }
 }
 
-export default App;
+const mapStateToProps = state => {
+  return {
+    isAuth: state.auth.token !== "",
+  }
+}
+
+const mapDispatchToProps = dispatch => {
+  return {
+    onTryAutoSignup: () => dispatch(actions.authCheckState()),
+  }
+}
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(App));

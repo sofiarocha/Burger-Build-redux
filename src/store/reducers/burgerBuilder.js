@@ -1,10 +1,11 @@
 import * as actionTypes from '../actions/actionTypes';
-import { updateObject } from '../utility';
+import { updateObject } from '../../shared/utility';
 
 const initialState = {
     ingredients: {},
     totalPrice: 4,
     error: false,
+    building: false,
 }
 
 const INGREDIENT_PRICES = {
@@ -22,21 +23,24 @@ const reducer = (state = initialState, action) => {
             const updateStateAdd = {
                 ingredients: updateIngredientsStateAdd,
                 totalPrice: state.totalPrice + INGREDIENT_PRICES[action.ingredientName],
+                building: true,
             }
             return updateObject(state, updateStateAdd);
         case actionTypes.REMOVE_INGREDIENT:
-                const updateIngredientRemove = { [action.ingredientName]: state.ingredients[action.ingredientName] - 1 };
-                const updateIngredientsStateRemove = updateObject(state.ingredients, updateIngredientRemove);
-                const updateStateRemove = {
-                    ingredients: updateIngredientsStateRemove,
-                    totalPrice: state.totalPrice - INGREDIENT_PRICES[action.ingredientName],
-                }
+            const updateIngredientRemove = { [action.ingredientName]: state.ingredients[action.ingredientName] - 1 };
+            const updateIngredientsStateRemove = updateObject(state.ingredients, updateIngredientRemove);
+            const updateStateRemove = {
+                ingredients: updateIngredientsStateRemove,
+                totalPrice: state.totalPrice - INGREDIENT_PRICES[action.ingredientName],
+                building: true,
+            }
             return updateObject(state, updateStateRemove);
         case actionTypes.SET_INGREDIENTS:
             return updateObject (state, {
                 ingredients: action.ingredients,
                 error: false,
                 totalPrice: 4,
+                building: false,
             });
         case actionTypes.FETCH_INGREDIENTS_FAILED:
             return updateObject(state, { error: true });

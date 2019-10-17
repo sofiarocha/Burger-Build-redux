@@ -11,7 +11,7 @@ const controls = [
     { label: "Meat", type: "meat"}
 ]
 
-const BuildControls = ({ addIngredient, removeIngredient, disableInfo, totalPrice, purchasable, ordered }) => {
+const BuildControls = ({ addIngredient, removeIngredient, disableInfo, totalPrice, purchasable, ordered, isAuth }) => {
     return (
         <div className={classes.BuildControls}>
             <p>Current Price: <strong>{totalPrice}</strong>€</p>
@@ -29,7 +29,7 @@ const BuildControls = ({ addIngredient, removeIngredient, disableInfo, totalPric
                 disabled={!purchasable}
                 onClick={ordered}
             >
-                ORDER NOW
+                {isAuth ? "ORDER NOW" : "SIGN UP TO ORDER"}
             </button>
         </div>
     )   
