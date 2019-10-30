@@ -18,7 +18,7 @@ const OrderSummary = ({ ingredients, purchaseCancel, purchaseContinue, totalPric
             <ul>
                 {ingredientsSummary}
             </ul>
-            <p><strong>Total price: {totalPrice}€</strong></p>
+            <p><strong>Total price: {totalPrice.toFixed(2)}€</strong></p>
             <p>Continue to Checkout?</p>
             <Button btnType="Danger" clicked={purchaseCancel}>CANCEL</Button>
             <Button btnType="Success" clicked={purchaseContinue}>CONTINUE</Button>

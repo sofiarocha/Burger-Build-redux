@@ -1,7 +1,6 @@
 // to create the the action creators to create the burger
 
 import * as actionTypes from './actionTypes';
-import axios from '../../axios-orders';
 
 export const addIngredient = (ingType) => {
     return {
@@ -31,13 +30,7 @@ export const fetchIngredientsFailed = () => {
 }
 
 export const initIngredients = () => {
-    return dispatch => {
-        axios.get('/ingredients.json')
-            .then(response => {
-                dispatch(setIngredients(response.data));
-            })
-            .catch(error => {
-                dispatch(fetchIngredientsFailed());
-            })
+    return {
+        type: actionTypes.SET_INITIATE_INGREDIENTS,
     }
 }

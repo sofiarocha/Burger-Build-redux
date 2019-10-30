@@ -11,7 +11,7 @@ import Spinner from '../../components/UI/Spinner/Spinner';
 import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
 import * as actions from '../../store/actions/actions';
 
-class BurgerBuilder extends Component {
+export class BurgerBuilder extends Component {
     state = {
         purshasing: false,
     }
@@ -58,27 +58,27 @@ class BurgerBuilder extends Component {
 
         return (
             <Aux>
-                <Modal show={purshasing} modalClosed={this.purchaseCancelHandler}>
-                    <OrderSummary 
-                        ingredients={this.props.ings}
-                        totalPrice={this.props.totPrice.toFixed(2)}
-                        purchaseCancel={this.purchaseCancelHandler}
-                        purchaseContinue={this.purchaseContinueHandler}
-                    />
-                </Modal>
                 {this.props.error
                      && <p style={{ textAlign: "center" }}>
                         Ingredients are not available! <br/>Try later, please
                     </p>
                 }
-                {Object.keys(this.props.ings).length !== 0
+                {this.props.ings
                     ? <Aux>
+                        <Modal show={purshasing} modalClosed={this.purchaseCancelHandler}>
+                            <OrderSummary 
+                                ingredients={this.props.ings}
+                                totalPrice={this.props.totPrice}
+                                purchaseCancel={this.purchaseCancelHandler}
+                                purchaseContinue={this.purchaseContinueHandler}
+                            />
+                        </Modal>
                         <Burger ingredients={this.props.ings} />
                         <BuildControls 
                             addIngredient={this.props.onAddIngredients}
                             removeIngredient={this.props.onRemoveIngredients}
                             disableInfo={disabledInfo}
-                            totalPrice={this.props.totPrice.toFixed(2)}
+                            totalPrice={this.props.totPrice}
                             purchasable={this.updatePurchase(this.props.ings)}
                             ordered={this.purshasingHandler}
                             isAuth={this.props.isAuth}

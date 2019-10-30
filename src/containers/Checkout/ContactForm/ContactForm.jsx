@@ -8,6 +8,7 @@ import axios from '../../../axios-orders';
 import Input from '../../../components/UI/Input/Input';
 import withErrorHandler from '../../../hoc/withErrorHandler/withErrorHandler';
 import * as actions from '../../../store/actions/actions';
+import { updateObject, checkValidationHandler } from '../../../shared/utility';
 
 class ContactForm extends Component {
     state = {
@@ -91,6 +92,8 @@ class ContactForm extends Component {
                 },
                 value: "normal",
                 valid: true,
+                validation: {},
+                changedByUser: false,
             }
         },
         formIsValid: false,
@@ -116,14 +119,15 @@ class ContactForm extends Component {
     }
     
     inputChangedHandler = (event, inputIndentifier) => {
-        const updatedForm = {...this.state.orderForm};
-        const updatedFormElement = {...updatedForm[inputIndentifier]};
-        updatedFormElement.value = event.target.value;
-        if (updatedFormElement.validation) {
-            updatedFormElement.valid = this.checkValidationHandler(updatedFormElement.value, updatedFormElement.validation);
-        }
-        updatedFormElement.changedByUser = true;
-        updatedForm[inputIndentifier] = updatedFormElement;
+        const updatedFormElement = updateObject(this.state.orderForm[inputIndentifier], {
+            value: event.target.value,
+            valid: checkValidationHandler(event.target.value, this.state.orderForm[inputIndentifier].validation),
+            changedByUser: true,
+        });
+        
+        const updatedForm = updateObject(this.state.orderForm, {
+            [inputIndentifier]: updatedFormElement,
+        });
 
         let formIsValid = true;
         for (let inputNames in updatedForm) {
@@ -133,29 +137,6 @@ class ContactForm extends Component {
             orderForm: updatedForm,
             formIsValid: formIsValid,
         });
-    }
-
-    checkValidationHandler = (value, rules) => {
-        let isValid = true;
-
-        if(rules.required) {
-            isValid = value.trim() !== '' && isValid;
-        }
-        if(rules.minLength) {
-            isValid = value.length >= rules.minLength && isValid;
-        }
-        if(rules.maxLength) {
-            isValid = value.length <= rules.maxLength && isValid;
-        }
-        if (rules.isEmail) {
-            const pattern = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
-            isValid = pattern.test(value) && isValid
-        }
-        if (rules.isNumeric) {
-            const pattern = /^\d+$/;
-            isValid = pattern.test(value) && isValid
-        }
-        return isValid;
     }
 
     render() {
